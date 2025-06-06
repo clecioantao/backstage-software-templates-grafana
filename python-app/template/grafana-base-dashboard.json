@@ -10,19 +10,20 @@
     "panels": [
       {
         "type": "timeseries",
-        "title": "Exemplo: HTTP Requests",
-        "gridPos": { "x": 0, "y": 0, "w": 24, "h": 9 },
-        "datasource": {
-          "type": "prometheus",
-          "uid": "ceo4waocqw934b"
-        },
+        "title": "Requisições HTTP 200",
+        "gridPos": { "x": 0, "y": 0, "w": 24, "h": 8 },
+        "datasource": "${DATASOURCE_NAME}",
         "targets": [
           {
-            "expr": "http_requests_total",
-            "legendFormat": "{{method}} {{status}}",
-            "refId": "A"
+            "refId": "A",
+            "expr": "rate(flask_http_request_total{status=\"200\"}[1m])",
+            "legendFormat": "200 OK",
+            "interval": ""
           }
-        ]
+        ],
+        "lines": true,
+        "fill": 1,
+        "linewidth": 2
       }
     ]
   },
