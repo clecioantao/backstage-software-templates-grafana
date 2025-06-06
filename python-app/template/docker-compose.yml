@@ -23,7 +23,7 @@ services:
     image: grafana/grafana:latest
     container_name: grafana
     ports:
-      - "3000:3000"
+      - "3333:3000"
     networks:
       - monitoring
     environment:

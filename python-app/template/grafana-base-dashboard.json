@@ -10,36 +10,19 @@
     "panels": [
       {
         "type": "timeseries",
-        "title": "Requisições HTTP por rota",
-        "gridPos": { "x": 0, "y": 0, "w": 24, "h": 10 },
-        "datasource": "Prometheus",
+        "title": "Exemplo: HTTP Requests",
+        "gridPos": { "x": 0, "y": 0, "w": 24, "h": 9 },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
         "targets": [
           {
-            "expr": "rate(flask_http_request_total[1m])",
-            "legendFormat": "{{method}} {{status}} {{path}}",
+            "expr": "http_requests_total",
+            "legendFormat": "{{method}} {{status}}",
             "refId": "A"
           }
-        ],
-        "fieldConfig": {
-          "defaults": {
-            "unit": "reqps",
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                { "color": "green", "value": null },
-                { "color": "orange", "value": 5 },
-                { "color": "red", "value": 10 }
-              ]
-            }
-          },
-          "overrides": []
-        },
-        "options": {
-          "legend": {
-            "displayMode": "table",
-            "placement": "bottom"
-          }
-        }
+        ]
       }
     ]
   },
