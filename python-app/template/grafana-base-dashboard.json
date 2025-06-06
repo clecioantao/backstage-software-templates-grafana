@@ -14,7 +14,7 @@
         "gridPos": { "x": 0, "y": 0, "w": 24, "h": 9 },
         "datasource": {
           "type": "prometheus",
-          "uid": "prometheus"
+          "uid": "ceo4waocqw934b"
         },
         "targets": [
           {
