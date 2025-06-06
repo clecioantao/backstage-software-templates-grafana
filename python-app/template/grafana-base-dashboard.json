@@ -7,26 +7,56 @@
     "timezone": "browser",
     "schemaVersion": 36,
     "version": 0,
+    "refresh": "10s",
     "panels": [
       {
         "type": "timeseries",
-        "title": "Requisições HTTP 200",
+        "title": "Requisições HTTP 200 - Flask",
         "gridPos": { "x": 0, "y": 0, "w": 24, "h": 8 },
-        "datasource": "${DATASOURCE_NAME}",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DATASOURCE_NAME}"
+        },
         "targets": [
           {
-            "refId": "A",
             "expr": "rate(flask_http_request_total{status=\"200\"}[1m])",
-            "legendFormat": "200 OK",
-            "interval": ""
+            "refId": "A"
           }
         ],
-        "lines": true,
-        "fill": 1,
-        "linewidth": 2
+        "fieldConfig": {
+          "defaults": {
+            "unit": "reqps",
+            "color": {
+              "mode": "palette-classic"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "single"
+          }
+        }
       }
     ]
   },
-  "folderTitle": "${FOLDER_NAME}",
   "overwrite": true
 }
