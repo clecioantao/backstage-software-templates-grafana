@@ -1,0 +1,10 @@
+apiVersion: backstage.io/v1alpha1
+kind: Template
+metadata:
+  name: python-template-dashboard-grafana
+  title: Python Flask com Dashboard Grafana
+  description: Cria uma aplicação Flask com dashboard automatizado no Grafana
+spec:
+  type: service
+  path: ./python-app/template.yaml
+  owner: development

@@ -1,0 +1,73 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: python-template-dashboard-grafana
+  title: Python flask template - Grafana
+  description: Flask com dashboard automatizado no Grafana
+spec:
+  owner: development
+  type: service
+
+  parameters:
+    - title: Preencha os dados da aplicação
+      required:
+        - component_id
+        - environment
+      properties:
+        component_id:
+          title: Nome do componente
+          type: string
+          description: Nome da aplicação (microserviço)
+          pattern: '^([a-zA-Z][a-zA-Z0-9]*)(-[a-zA-Z0-9]+)*$'
+        environment:
+          title: Ambiente
+          type: string
+          description: Onde será implantado
+          enum:
+            - dev
+            - prod
+
+  steps:
+    - id: fetch-base
+      name: Buscar template base
+      action: fetch:template
+      input:
+        url: ./template
+        values:
+          app_name: ${{ parameters.component_id }}
+          app_env: ${{ parameters.environment }}
+
+    - id: publish
+      name: Publicar no GitHub
+      action: publish:github
+      input:
+        allowedHosts:
+          - github.com
+        description: Projeto ${{ parameters.component_id }}
+        repoUrl: github.com?owner=org-tests-ca&repo=${{ parameters.component_id }}
+        protectDefaultBranch: false
+        repoVisibility: public
+
+    - id: register
+      name: Registrar no catálogo
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps['publish'].output.repoContentsUrl }}
+        catalogInfoPath: "/catalog-info.yaml"
+
+    - id: dashboard
+      name: Criar Dashboard no Grafana
+      action: custom:create-grafana-dashboard
+      input:
+        dashboardName: ${{ parameters.component_id }}
+        folderName: ${{ parameters.environment }}
+        jsonTemplatePath: ./grafana-base-dashboard.json
+
+  output:
+    links:
+      - title: Repositório no GitHub
+        url: ${{ steps['publish'].output.remoteUrl }}
+      - title: Ver no catálogo
+        url: /catalog/default/component/${{ parameters.component_id }}
+      - title: Acessar dashboard no Grafana
+        url: http://localhost:3333/d/${{ parameters.component_id }}
