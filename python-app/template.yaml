@@ -83,7 +83,7 @@ spec:
       name: Criar regras de alerta Grafana
       action: custom:create-grafana-alerts
       input:
-        alertRulePath: template/alert-rules.yaml
+        alertRulePath: ./alert-rules.yaml
 
   output:
     links:
