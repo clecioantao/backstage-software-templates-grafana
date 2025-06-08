@@ -1,0 +1,66 @@
+# alert-rules.yaml
+apiVersion: 1
+
+groups:
+  - name: python-app-alerts
+    interval: 1m
+    rules:
+      - uid: "error-5xx-rule"
+        title: "Erros 5xx detectados"
+        condition: "B"
+        data:
+          - refId: "B"
+            relativeTimeRange:
+              from: 60
+              to: 0
+            datasourceUid: "${DATASOURCE_UID}"
+            model:
+              expr: rate(flask_http_request_total{status=~"5.."}[1m])
+              interval: ""
+              intervalFactor: 2
+              refId: "B"
+              datasource:
+                type: prometheus
+                uid: "${DATASOURCE_UID}"
+              format: time_series
+              instant: false
+              legendFormat: "Erros 5xx"
+              range: true
+        noDataState: NoData
+        execErrState: Alerting
+        for: 1m
+        annotations:
+          summary: "Detectado aumento de erros 5xx"
+          description: "Taxa de erros HTTP 5xx excedeu o limite."
+        labels:
+          severity: critical
+
+      - uid: "high-traffic-rule"
+        title: "Tráfego HTTP Alto"
+        condition: "C"
+        data:
+          - refId: "C"
+            relativeTimeRange:
+              from: 60
+              to: 0
+            datasourceUid: "${DATASOURCE_UID}"
+            model:
+              expr: rate(flask_http_request_total[1m])
+              interval: ""
+              intervalFactor: 2
+              refId: "C"
+              datasource:
+                type: prometheus
+                uid: "${DATASOURCE_UID}"
+              format: time_series
+              instant: false
+              legendFormat: "Requisições/s"
+              range: true
+        noDataState: NoData
+        execErrState: Alerting
+        for: 1m
+        annotations:
+          summary: "Tráfego HTTP alto detectado"
+          description: "A taxa de requisições ultrapassou o limite."
+        labels:
+          severity: warning
