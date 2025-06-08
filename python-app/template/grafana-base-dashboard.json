@@ -3,7 +3,7 @@
     "id": null,
     "uid": null,
     "title": "${DASHBOARD_NAME}",
-    "tags": ["generated", "auto"],
+    "tags": ["generated"],
     "timezone": "browser",
     "schemaVersion": 36,
     "version": 0,
@@ -11,8 +11,76 @@
     "panels": [
       {
         "type": "timeseries",
+        "title": "HTTP Requests por Código de Status",
+        "targets": [
+          {
+            "expr": "rate(flask_http_request_total[1m])",
+            "legendFormat": "{{status}}",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "reqps"
+          }
+        },
+        "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 }
+      },
+      {
+        "type": "timeseries",
+        "title": "Duração Média das Requisições (s)",
+        "targets": [
+          {
+            "expr": "rate(flask_http_request_duration_seconds_sum[1m]) / rate(flask_http_request_duration_seconds_count[1m])",
+            "legendFormat": "Média por rota",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "s"
+          }
+        },
+        "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 }
+      },
+      {
+        "type": "timeseries",
+        "title": "Memória em Uso (Bytes)",
+        "targets": [
+          {
+            "expr": "process_resident_memory_bytes",
+            "legendFormat": "Memória",
+            "refId": "C"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "bytes"
+          }
+        },
+        "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 }
+      },
+      {
+        "type": "timeseries",
+        "title": "Uso de CPU (Total em segundos)",
+        "targets": [
+          {
+            "expr": "rate(process_cpu_seconds_total[1m])",
+            "legendFormat": "CPU",
+            "refId": "D"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "s"
+          }
+        },
+        "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 }
+      },
+      {
+        "type": "timeseries",
         "title": "📈 Requisições por segundo (com alerta)",
-        "gridPos": { "x": 0, "y": 0, "w": 24, "h": 8 },
+        "gridPos": { "x": 0, "y": 16, "w": 24, "h": 8 },
         "datasource": {
           "type": "prometheus",
           "uid": "${DATASOURCE_NAME}"
@@ -20,7 +88,7 @@
         "targets": [
           {
             "expr": "rate(flask_http_request_total[1m])",
-            "refId": "A"
+            "refId": "E"
           }
         ],
         "alert": {
@@ -29,7 +97,7 @@
             {
               "evaluator": { "type": "gt", "params": [10] },
               "operator": { "type": "and" },
-              "query": { "params": ["A"] },
+              "query": { "params": ["E"] },
               "reducer": { "type": "avg" },
               "type": "query"
             }
@@ -56,7 +124,7 @@
       {
         "type": "timeseries",
         "title": "🔥 Erros 5xx por segundo (com alerta)",
-        "gridPos": { "x": 0, "y": 8, "w": 24, "h": 8 },
+        "gridPos": { "x": 0, "y": 24, "w": 24, "h": 8 },
         "datasource": {
           "type": "prometheus",
           "uid": "${DATASOURCE_NAME}"
@@ -64,7 +132,7 @@
         "targets": [
           {
             "expr": "rate(flask_http_request_total{status=~\"5..\"}[1m])",
-            "refId": "B"
+            "refId": "F"
           }
         ],
         "alert": {
@@ -73,7 +141,7 @@
             {
               "evaluator": { "type": "gt", "params": [0] },
               "operator": { "type": "and" },
-              "query": { "params": ["B"] },
+              "query": { "params": ["F"] },
               "reducer": { "type": "sum" },
               "type": "query"
             }
