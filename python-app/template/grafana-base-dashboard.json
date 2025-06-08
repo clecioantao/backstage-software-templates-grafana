@@ -106,7 +106,8 @@
           "for": "1m",
           "frequency": "1m",
           "handler": 1,
-          "noDataState": "no_data"
+          "noDataState": "no_data",
+          "alertRuleTags": {}
         },
         "fieldConfig": {
           "defaults": {
@@ -150,7 +151,8 @@
           "for": "1m",
           "frequency": "1m",
           "handler": 1,
-          "noDataState": "no_data"
+          "noDataState": "no_data",
+          "alertRuleTags": {}
         },
         "fieldConfig": {
           "defaults": {
