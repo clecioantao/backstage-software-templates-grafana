@@ -1,18 +1,3 @@
-# ------------------------------------------------------------------------------
-# Template Backstage para scaffold de aplicação Flask com dashboard no Grafana.
-# 
-# Este template realiza as seguintes etapas automatizadas:
-# - Solicita nome do componente e ambiente (dev ou prod)
-# - Busca um template base de aplicação Python/Flask
-# - Publica o repositório no GitHub
-# - Registra o projeto no catálogo do Backstage
-# - Cria automaticamente um dashboard no Grafana usando uma action customizada
-# - Cria regras de alertas automáticas no Grafana a partir de YAML externo
-#
-# Owner: Clecio Antao
-# Data: Junho/2025
-# ------------------------------------------------------------------------------
-
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
