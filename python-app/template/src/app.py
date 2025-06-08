@@ -21,6 +21,10 @@ def info():
 def health():
     return jsonify({'status': 'up'}), 200
 
+@app.route("/api/v1/error")
+def generate_error():
+    return "Erro!", 500
+
 # Prometheus metrics estarão em /metrics
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000)
