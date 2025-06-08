@@ -1,66 +1,79 @@
-# alert-rules.yaml
-apiVersion: 1
-
 groups:
-  - name: python-app-alerts
+  - name: flask-app-alerts
     interval: 1m
     rules:
-      - uid: "error-5xx-rule"
-        title: "Erros 5xx detectados"
-        condition: "B"
+      - uid: alert-traffic-high
+        title: Alerta de Tráfego Alto
+        condition: C
         data:
-          - refId: "B"
+          - refId: A
             relativeTimeRange:
               from: 60
               to: 0
-            datasourceUid: "${DATASOURCE_UID}"
-            model:
-              expr: rate(flask_http_request_total{status=~"5.."}[1m])
-              interval: ""
-              intervalFactor: 2
-              refId: "B"
-              datasource:
-                type: prometheus
-                uid: "${DATASOURCE_UID}"
-              format: time_series
-              instant: false
-              legendFormat: "Erros 5xx"
-              range: true
-        noDataState: NoData
-        execErrState: Alerting
-        for: 1m
-        annotations:
-          summary: "Detectado aumento de erros 5xx"
-          description: "Taxa de erros HTTP 5xx excedeu o limite."
-        labels:
-          severity: critical
-
-      - uid: "high-traffic-rule"
-        title: "Tráfego HTTP Alto"
-        condition: "C"
-        data:
-          - refId: "C"
-            relativeTimeRange:
-              from: 60
-              to: 0
-            datasourceUid: "${DATASOURCE_UID}"
+            datasourceUid: ${DATASOURCE_NAME}
             model:
               expr: rate(flask_http_request_total[1m])
+              format: time_series
               interval: ""
               intervalFactor: 2
-              refId: "C"
+              legendFormat: "Tráfego"
+              refId: A
               datasource:
                 type: prometheus
-                uid: "${DATASOURCE_UID}"
-              format: time_series
-              instant: false
-              legendFormat: "Requisições/s"
-              range: true
-        noDataState: NoData
-        execErrState: Alerting
-        for: 1m
+                uid: ${DATASOURCE_NAME}
+          - refId: C
+            type: "reduce"
+            datasourceUid: "-- Mixed --"
+            model:
+              refId: C
+              type: avg
+              params: []
+              reducer: avg
+              input: A
+        thresholds:
+          - level: 1
+            operator: "gt"
+            value: 10
         annotations:
-          summary: "Tráfego HTTP alto detectado"
-          description: "A taxa de requisições ultrapassou o limite."
+          summary: "⚠️ Tráfego alto detectado"
+          description: "A média de requisições por segundo excedeu 10 req/s"
         labels:
           severity: warning
+
+      - uid: alert-errors-5xx
+        title: Alerta de Erros 5xx
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 60
+              to: 0
+            datasourceUid: ${DATASOURCE_NAME}
+            model:
+              expr: rate(flask_http_request_total{status=~"5.."}[1m])
+              format: time_series
+              interval: ""
+              intervalFactor: 2
+              legendFormat: "Erros 5xx"
+              refId: A
+              datasource:
+                type: prometheus
+                uid: ${DATASOURCE_NAME}
+          - refId: C
+            type: "reduce"
+            datasourceUid: "-- Mixed --"
+            model:
+              refId: C
+              type: sum
+              params: []
+              reducer: sum
+              input: A
+        thresholds:
+          - level: 1
+            operator: "gt"
+            value: 0
+        annotations:
+          summary: "🔥 Erros 5xx detectados"
+          description: "Foram detectadas respostas HTTP com status 5xx na aplicação."
+        labels:
+          severity: critical
