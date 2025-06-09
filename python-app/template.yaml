@@ -64,12 +64,6 @@ spec:
         folderName: ${{ parameters.environment }}
         jsonTemplatePath: ./grafana-base-dashboard.json
 
-    - id: alerts
-      name: Criar regras de alerta Grafana
-      action: custom:create-grafana-alerts
-      input:
-        alertRulesPath: ./alerta-http.json
-
   output:
     links:
       - title: Repositório no GitHub
