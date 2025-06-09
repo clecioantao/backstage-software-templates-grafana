@@ -1,0 +1,75 @@
+{
+  "title": "Alerta HTTP alto",
+  "ruleGroup": "flask-alert-group",
+  "folderUID": "general",
+  "noDataState": "NoData",
+  "execErrState": "Error",
+  "for": "1m",
+  "orgId": 1,
+  "uid": "flask-alert-trafego-alto",
+  "condition": "B",
+  "annotations": {
+    "summary": "Tráfego HTTP acima de 10 req/s"
+  },
+  "labels": {
+    "severity": "warning",
+    "team": "dev"
+  },
+  "data": [
+    {
+      "refId": "A",
+      "queryType": "",
+      "relativeTimeRange": {
+        "from": 600,
+        "to": 0
+      },
+      "datasourceUid": "PROMETHEUS_DS_UID",
+      "model": {
+        "expr": "rate(flask_http_request_total[1m])",
+        "hide": false,
+        "intervalMs": 1000,
+        "maxDataPoints": 43200,
+        "refId": "A"
+      }
+    },
+    {
+      "refId": "B",
+      "queryType": "",
+      "relativeTimeRange": {
+        "from": 600,
+        "to": 0
+      },
+      "datasourceUid": "-100",
+      "model": {
+        "conditions": [
+          {
+            "evaluator": {
+              "params": [10],
+              "type": "gt"
+            },
+            "operator": {
+              "type": "and"
+            },
+            "query": {
+              "params": ["A"]
+            },
+            "reducer": {
+              "params": [],
+              "type": "last"
+            },
+            "type": "query"
+          }
+        ],
+        "datasource": {
+          "type": "__expr__",
+          "uid": "-100"
+        },
+        "hide": false,
+        "intervalMs": 1000,
+        "maxDataPoints": 43200,
+        "refId": "B",
+        "type": "classic_conditions"
+      }
+    }
+  ]
+}

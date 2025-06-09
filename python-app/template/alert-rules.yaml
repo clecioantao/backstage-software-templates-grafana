@@ -1,75 +1,18 @@
-groups:
-  - name: flask-alert-group
-    interval: 30s
-    rules:
-      - uid: alerta-trafego-alto
-        title: Alerta de Tráfego Alto
-        condition: B
-        noDataState: NoData
-        execErrState: Error
-        for: 1m
-        annotations:
-          summary: "Tráfego HTTP acima de 10 req/s"
-        labels:
-          severity: warning
-        data:
-          - refId: A
-            relativeTimeRange:
-              from: 600
-              to: 0
-            datasourceUid: ${DATASOURCE_UID}
-            model:
-              expr: rate(flask_http_request_total[1m])
-              interval: ""
-              intervalMs: 1000
-              maxDataPoints: 43200
-              refId: A
-              format: time_series
-          - refId: B
-            relativeTimeRange:
-              from: 600
-              to: 0
-            datasourceUid: ${DATASOURCE_UID}
-            model:
-              expr: rate(flask_http_request_total[1m]) > 10
-              interval: ""
-              intervalMs: 1000
-              maxDataPoints: 43200
-              refId: B
-              format: time_series
+name: flask-alert-group
+interval: 30s
+rules:
+  - alert: AlertaTrafegoAlto
+    expr: rate(flask_http_request_total[1m]) > 10
+    for: 1m
+    labels:
+      severity: warning
+    annotations:
+      summary: Tráfego HTTP acima de 10 req/s
 
-      - uid: alerta-erros-5xx
-        title: Alerta de Erros 5xx
-        condition: B
-        noDataState: NoData
-        execErrState: Error
-        for: 1m
-        annotations:
-          summary: "Taxa de erros 5xx detectada"
-        labels:
-          severity: critical
-        data:
-          - refId: A
-            relativeTimeRange:
-              from: 600
-              to: 0
-            datasourceUid: ${DATASOURCE_UID}
-            model:
-              expr: rate(flask_http_request_total{status=~"5.."}[1m])
-              interval: ""
-              intervalMs: 1000
-              maxDataPoints: 43200
-              refId: A
-              format: time_series
-          - refId: B
-            relativeTimeRange:
-              from: 600
-              to: 0
-            datasourceUid: ${DATASOURCE_UID}
-            model:
-              expr: rate(flask_http_request_total{status=~"5.."}[1m]) > 0
-              interval: ""
-              intervalMs: 1000
-              maxDataPoints: 43200
-              refId: B
-              format: time_series
+  - alert: AlertaErros5xx
+    expr: rate(flask_http_request_total{status=~"5.."}[1m]) > 0
+    for: 1m
+    labels:
+      severity: critical
+    annotations:
+      summary: Taxa de erros 5xx detectada
