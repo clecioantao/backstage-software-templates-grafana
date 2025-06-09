@@ -1,13 +1,12 @@
 {
-  "title": "Alerta HTTP - Requisições Elevadas",
-  "ruleGroup": "Default",
+  "uid": "alerta-http-reqs-elevadas-{{ timestamp }}",
   "folderUID": "general",
+  "ruleGroup": "Default",
+  "title": "Alerta HTTP - Requisições Elevadas",
+  "condition": "B",
   "noDataState": "NoData",
   "execErrState": "Error",
   "for": "1m",
-  "orgId": 1,
-  "uid": "alerta-http-reqs-elevadas",
-  "condition": "B",
   "annotations": {
     "summary": "Requisições acima de 10 por segundo"
   },
