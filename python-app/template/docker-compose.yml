@@ -47,12 +47,16 @@ services:
   promtail:
     image: grafana/promtail:2.9.2
     container_name: promtail
+    networks:
+      - monitoring
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
     volumes:
       - ./logs:/var/log/flask
       - ./promtail-config.yaml:/etc/promtail/promtail.yaml
     command: -config.file=/etc/promtail/promtail.yaml
-    networks:
-      - monitoring
 
 volumes:
   grafana-storage:

@@ -12,9 +12,13 @@
       {
         "type": "timeseries",
         "title": "HTTP Requests por Código de Status",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DATASOURCE_NAME}"
+        },
         "targets": [
           {
-            "expr": "rate(flask_http_request_total[1m])",
+            "expr": "rate(flask_http_request_total[10m])",
             "legendFormat": "{{status}}",
             "refId": "A"
           }
@@ -29,9 +33,13 @@
       {
         "type": "timeseries",
         "title": "Duração Média das Requisições (s)",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DATASOURCE_NAME}"
+        },
         "targets": [
           {
-            "expr": "rate(flask_http_request_duration_seconds_sum[1m]) / rate(flask_http_request_duration_seconds_count[1m])",
+            "expr": "rate(flask_http_request_duration_seconds_sum[10m]) / clamp_min(rate(flask_http_request_duration_seconds_count[10m]), 1)",
             "legendFormat": "Média por rota",
             "refId": "B"
           }
@@ -46,6 +54,10 @@
       {
         "type": "timeseries",
         "title": "Memória em Uso (Bytes)",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DATASOURCE_NAME}"
+        },
         "targets": [
           {
             "expr": "process_resident_memory_bytes",
@@ -63,9 +75,13 @@
       {
         "type": "timeseries",
         "title": "Uso de CPU (Total em segundos)",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DATASOURCE_NAME}"
+        },
         "targets": [
           {
-            "expr": "rate(process_cpu_seconds_total[1m])",
+            "expr": "rate(process_cpu_seconds_total[10m])",
             "legendFormat": "CPU",
             "refId": "D"
           }
@@ -87,7 +103,7 @@
         },
         "targets": [
           {
-            "expr": "rate(flask_http_request_total[1m])",
+            "expr": "rate(flask_http_request_total[10m])",
             "refId": "E"
           }
         ],
@@ -132,7 +148,7 @@
         },
         "targets": [
           {
-            "expr": "rate(flask_http_request_total{status=~\"5..\"}[1m])",
+            "expr": "rate(flask_http_request_total{status=~\"5..\"}[10m])",
             "refId": "F"
           }
         ],
@@ -166,6 +182,42 @@
           },
           "overrides": []
         }
+      },
+      {
+        "type": "timeseries",
+        "title": "Latência - Percentil 95 (s)",
+        "gridPos": { "x": 0, "y": 32, "w": 24, "h": 8 },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DATASOURCE_NAME}"
+        },
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, sum(rate(flask_http_request_duration_seconds_bucket[10m])) by (le))",
+            "refId": "G"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "s"
+          }
+        }
+      },
+      {
+        "type": "timeseries",
+        "title": "Garbage Collector - Coletas por Geração",
+        "gridPos": { "x": 0, "y": 40, "w": 24, "h": 8 },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DATASOURCE_NAME}"
+        },
+        "targets": [
+          {
+            "expr": "rate(python_gc_collections_total[10m])",
+            "legendFormat": "Geração {{generation}}",
+            "refId": "H"
+          }
+        ]
       }
     ]
   },

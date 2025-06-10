@@ -4,7 +4,7 @@
 # Autor: Equipe de Observabilidade
 # Versão: 1.0
 
-API_URL="http://localhost:5000/api/v1"
+API_URL="http://python-app-dev-dev.test.com/api/v1"
 LOOP_COUNT=20
 DELAY=1
 
